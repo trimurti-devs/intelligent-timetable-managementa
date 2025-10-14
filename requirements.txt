@@ -1,4 +1,5 @@
-Flask==2.3.3
+Flask==2.4.0
+
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
 WTForms==3.0.1
@@ -9,6 +10,7 @@ Werkzeug==2.3.7
 psycopg2-binary==2.9.9
 vercel-wsgi
 email_validator
+
 
 
 
