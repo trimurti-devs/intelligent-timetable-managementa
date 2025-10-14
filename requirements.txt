@@ -1,5 +1,5 @@
 Flask==3.1.2
-Werkzeug>=3.1.0
+Werkzeug==3.2.0   # or latest 3.x
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
 WTForms==3.0.1
@@ -10,3 +10,4 @@ psycopg2-binary==2.9.9
 email_validator
 gunicorn
 Jinja2
+
