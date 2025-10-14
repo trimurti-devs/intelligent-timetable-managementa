@@ -21,6 +21,33 @@ app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///timetable.db')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 db = SQLAlchemy(app)
+# --- Database configuration (Supabase + local fallback) ---
+DATABASE_URL = os.environ.get('DATABASE_URL')
+LOCAL_DEV = os.environ.get('LOCAL_DEV', '0') == '1' or os.environ.get('FLASK_ENV') == 'development'
+
+if DATABASE_URL:
+    # Fix scheme if needed (Supabase often provides postgres://)
+    if DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql+psycopg2://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+else:
+    if LOCAL_DEV:
+        print("⚙️ Using local SQLite database (development mode)")
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
+    else:
+        raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+
+# Initialize DB safely
+try:
+    with app.app_context():
+        db.create_all()
+        print("✅ Database tables created or verified.")
+except Exception as e:
+    print(f"⚠️ Database initialization error (ignored): {e}")
+
 csrf = CSRFProtect(app)
 
 # Models
@@ -1170,4 +1197,5 @@ from vercel_wsgi import handle
 
 def handler(event, context):
     return handle(app, event, context)
+
 
