@@ -17,7 +17,8 @@ import re
 from collections import namedtuple
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'
+# app.py (Fixed)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_long_and_secure_fallback_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///timetable.db')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 db = SQLAlchemy(app)
