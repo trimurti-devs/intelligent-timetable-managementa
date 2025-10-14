@@ -18,7 +18,7 @@ from collections import namedtuple
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///timetable.db')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
