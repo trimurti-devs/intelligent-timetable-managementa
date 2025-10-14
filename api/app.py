@@ -50,7 +50,31 @@ except Exception as e:
     print(f"⚠️ Database initialization error (ignored): {e}")
 
 csrf = CSRFProtect(app)
+# app.py (Add this new section)
 
+# --- Global Error Logging to Debug Vercel Crash ---
+import logging
+import traceback
+from flask import jsonify
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    # Print the full traceback to the Vercel logs
+    logging.error('FATAL FUNCTION CRASHED:')
+    logging.error(traceback.format_exc())
+    
+    # Return a generic 500 response (prevents Vercel from swallowing the error)
+    return jsonify({
+        'status': 500,
+        'error': 'Internal Server Error',
+        'message': 'Check Vercel logs for full Python traceback.'
+    }), 500
+
+# --------------------------------------------------
+
+# Now, your routes start below this, e.g.:
+# @app.route('/') 
+# ...
 # Models
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
