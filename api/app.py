@@ -35,8 +35,8 @@ else:
     if LOCAL_DEV:
         print("⚙️ Using local SQLite database (development mode)")
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
-    else:
-        raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
+    # else:
+    #     raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
