@@ -1189,13 +1189,7 @@ def clear_all_timetables():
 def clock_image():
     return send_file('clock.jpg', mimetype='image/jpeg')
 
-# Vercel deployment - create tables on startup
 
-
-from vercel_wsgi import handle
-
-def handler(event, context):
-    return handle(app, event, context)
 
 
 
