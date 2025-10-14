@@ -1193,10 +1193,11 @@ def clock_image():
 with app.app_context():
     db.create_all()
 
-from vercel_wsgi3 import handle
+from vercel_wsgi import handle
 
 def handler(event, context):
     return handle(app, event, context)
+
 
 
 
