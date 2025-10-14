@@ -1190,8 +1190,7 @@ def clock_image():
     return send_file('clock.jpg', mimetype='image/jpeg')
 
 # Vercel deployment - create tables on startup
-with app.app_context():
-    db.create_all()
+
 
 from vercel_wsgi import handle
 
