@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card shadow-lg rounded-4 p-4 mx-auto" style="max-width: 480px; background: #f0f4ff;">
+    <div class="text-center mb-4">
+        <div style="width: 64px; height: 64px; background-color: #4338ca; border-radius: 50%; margin: 0 auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person" width="40" height="40" fill="white" viewBox="0 0 16 16" style="margin-top: 12px;">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                <path fill-rule="evenodd" d="M8 9a5 5 0 0 0-4.546 2.916.5.5 0 0 0 .832.554A4 4 0 0 1 8 10a4 4 0 0 1 3.714 2.47.5.5 0 1 0 .832-.554A5 5 0 0 0 8 9z"/>
+            </svg>
+        </div>
+        <h2 class="mt-3" style="color: #4338ca; font-weight: 700;">Your Profile</h2>
+    </div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.full_name.label(class="form-label fw-semibold") }}
+            {{ form.full_name(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+        </div>
+        <div class="mb-3">
+            {{ form.password.label(class="form-label fw-semibold") }}
+            {{ form.password(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+            <small class="form-text text-muted">{{ form.password.description }}</small>
+        </div>
+        <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label fw-semibold") }}
+            {{ form.confirm_password(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+        </div>
+        <div class="mb-3">
+            {{ form.department.label(class="form-label fw-semibold") }}
+            {{ form.department(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+        </div>
+        {% if user.role == 'student' %}
+        <div class="mb-3">
+            {{ form.year.label(class="form-label fw-semibold") }}
+            {{ form.year(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+        </div>
+        <div class="mb-3">
+            {{ form.semester.label(class="form-label fw-semibold") }}
+            {{ form.semester(class="form-control rounded-3 border-2 border-indigo-300 px-3 py-2") }}
+        </div>
+        {% endif %}
+        {{ form.submit(class="btn btn-primary w-100 rounded-3 py-2 fw-bold") }}
+    </form>
+
+    <hr class="my-4">
+
+    <form method="POST" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}">
+        <button type="submit" class="btn btn-danger w-100 rounded-3 py-2 fw-bold">Delete Account</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Enroll in Course - Timetable App{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="min-height: 80vh; background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Enroll in a Course</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if form.course_id.choices|length > 0 %}
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+                            <div class="mb-3">
+                                <label for="{{ form.course_id.id }}" class="form-label">Select a Course to Enroll</label>
+                                {{ form.course_id(class="form-select", style="font-size: 1.1rem;") }}
+                                {% for error in form.course_id.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="d-grid">
+                                {{ form.submit(class="btn btn-primary btn-lg") }}
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <h5 class="text-muted">No available courses to enroll in.</h5>
+                            <p class="text-muted">You are already enrolled in all available courses or no courses exist.</p>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">Back to Dashboard</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

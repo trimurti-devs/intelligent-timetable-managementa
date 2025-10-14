@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh; background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);">
+    <div class="card p-5 shadow-lg" style="max-width: 700px; width: 100%; background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%); border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: fadeInUp 0.6s ease forwards;">
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="mb-0 me-3" style="font-weight: 700; font-size: 2rem; color: #2563eb;">🧑‍🏫 Add Faculty</h2>
+            <a href="{{ url_for('dashboard') }}" class="text-decoration-none" style="color: #3b82f6; font-weight: 600;">← Back to Dashboard</a>
+        </div>
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <section class="mb-4">
+                <h3 class="fw-semibold mb-3" style="color: #1e40af;">👤 Faculty Info</h3>
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label fw-semibold") }}
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-radius: 0.375rem 0 0 0.375rem;">👤</span>
+                        {{ form.name(class="form-control border-start-0", placeholder="e.g., Dr. John Smith") }}
+                    </div>
+                    {% if form.name.errors %}
+                        <div class="text-danger small mt-1">{{ form.name.errors[0] }}</div>
+                    {% endif %}
+                </div>
+            </section>
+            <section class="mb-4">
+                <h3 class="fw-semibold mb-3" style="color: #1e40af;">📅 Availability</h3>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] %}
+                    <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1" onclick="toggleDay(this)" data-day="{{ day }}">{{ day }}</button>
+                    {% endfor %}
+                </div>
+                <input type="hidden" name="availability_days" id="availability_days" value="">
+                <div class="d-flex gap-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-radius: 0.375rem 0 0 0.375rem;">⏰</span>
+                        <input type="time" class="form-control border-start-0" name="availability_start" placeholder="Start Time" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-radius: 0.375rem 0 0 0.375rem;">⏰</span>
+                        <input type="time" class="form-control border-start-0" name="availability_end" placeholder="End Time" required>
+                    </div>
+                </div>
+                {% if form.availability.errors %}
+                    <div class="text-danger small">{{ form.availability.errors[0] }}</div>
+                {% endif %}
+            </section>
+            <section class="mb-4">
+                <h3 class="fw-semibold mb-3" style="color: #1e40af;">📚 Teaching Details</h3>
+                <div class="mb-3">
+                    {{ form.max_load.label(class="form-label fw-semibold") }}
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-radius: 0.375rem 0 0 0.375rem;">📅</span>
+                        {{ form.max_load(class="form-control border-start-0", placeholder="Max classes per day") }}
+                    </div>
+                    {% if form.max_load.errors %}
+                        <div class="text-danger small mt-1">{{ form.max_load.errors[0] }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="subject" class="form-label fw-semibold">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" placeholder="e.g., Advanced Physics">
+                </div>
+            </section>
+            <button type="submit" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2" style="font-weight: 700;">
+                ➕ Add Faculty
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleDay(button) {
+        button.classList.toggle('active');
+        const selectedDays = Array.from(document.querySelectorAll('.btn.active')).map(btn => btn.getAttribute('data-day'));
+        document.getElementById('availability_days').value = selectedDays.join(',');
+    }
+
+    // Optional: Toast notification for success (requires backend to set flash message)
+    document.addEventListener('DOMContentLoaded', () => {
+        const flashMessage = "{{ get_flashed_messages(category_filter=['success'])|join(' ') }}";
+        if (flashMessage) {
+            const toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-bg-success border-0 position-fixed top-0 end-0 m-3';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">${flashMessage}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+    });
+</script>
+
+<style>
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.btn.active {
+    background-color: #3b82f6;
+    color: white;
+}
+</style>
+{% endblock %}
