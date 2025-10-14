@@ -16,9 +16,9 @@ import io
 import re
 from collections import namedtuple
 
-app = Flask(__name__,
-    template_folder=os.path.join(os.path.dirname(__file__), '..', 'templates'),
-    static_folder=os.path.join(os.path.dirname(__file__), '..', 'static')
+app = Flask(__name__, 
+    template_folder='../templates',
+    static_folder='../static'
 )
 # app.py (Fixed)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_long_and_secure_fallback_key')
