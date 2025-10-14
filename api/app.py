@@ -1185,9 +1185,6 @@ def clear_all_timetables():
 
 
 
-@app.route('/clock.jpg')
-def clock_image():
-    return send_file('clock.jpg', mimetype='image/jpeg')
 
 
 
