@@ -1166,5 +1166,8 @@ def clock_image():
 with app.app_context():
     db.create_all()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+from vercel_wsgi import handle
+
+def handler(event, context):
+    return handle(app, event, context)
+
