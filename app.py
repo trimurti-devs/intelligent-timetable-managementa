@@ -48,6 +48,13 @@ import logging
 import traceback
 from flask import jsonify
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
 @app.errorhandler(Exception)
 def handle_error(e):
     # Print the full traceback to the Vercel logs
