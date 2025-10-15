@@ -41,8 +41,10 @@ if os.environ.get('FLASK_ENV') == 'development' or os.environ.get('LOCAL_DEV') =
         db.create_all()
         print("✅ Database tables created or verified.")
 csrf = CSRFProtect(app)
-# app.py (Add this new section)
 
+@app.route("/")
+def home():
+    return render_template("index.html")  # or return "Hello, World!" if no template
 # --- Global Error Logging to Debug Vercel Crash ---
 import logging
 import traceback
