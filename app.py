@@ -30,11 +30,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Routes
-@app.route("/")
-def home():
-    return "Flask App Running on Render!"
-
 # Initialize DB
 if os.environ.get('FLASK_ENV') == 'development' or os.environ.get('LOCAL_DEV') == '1':
     with app.app_context():
@@ -42,6 +37,7 @@ if os.environ.get('FLASK_ENV') == 'development' or os.environ.get('LOCAL_DEV') =
         print("✅ Database tables created or verified.")
 csrf = CSRFProtect(app)
 
+# Routes
 @app.route("/")
 def home():
     return render_template("index.html")  # or return "Hello, World!" if no template
