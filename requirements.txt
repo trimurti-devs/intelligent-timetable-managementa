@@ -5,11 +5,12 @@ WTForms==3.1.1
 Werkzeug==3.0.1
 python-docx==1.0.1
 reportlab==4.0.9
-psycopg2-binary==2.9.9
+psycopg2-binary
 python-dotenv==1.0.0
 email_validator
 gunicorn
 Jinja2
+
 
 
 
