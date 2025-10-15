@@ -20,6 +20,9 @@ app = Flask(__name__,
     template_folder='../templates',
     static_folder='../static'
 )
+@app.route("/")
+def home():
+    return {"status": "ok", "message": "Flask running on Vercel!"}
 # app.py (Fixed)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_long_and_secure_fallback_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///timetable.db')
