@@ -18,25 +18,19 @@ from collections import namedtuple
 
 
 
+# --- Flask App Setup ---
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Flask App Running on Render!"
-
-# Do not use app.run() here
-
-# app.py (Fixed)
+# Secret key
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_long_and_secure_fallback_key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///timetable.db')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-db = SQLAlchemy(app)
-# --- Database configuration (Supabase + local fallback) ---
+
+# --- Database Configuration ---
 DATABASE_URL = os.environ.get('DATABASE_URL')
 LOCAL_DEV = os.environ.get('LOCAL_DEV', '0') == '1' or os.environ.get('FLASK_ENV') == 'development'
 
 if DATABASE_URL:
-    # Fix scheme if needed (Supabase often provides postgres://)
+    # Supabase often provides "postgres://", SQLAlchemy needs "postgresql+psycopg2://"
     if DATABASE_URL.startswith('postgres://'):
         DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql+psycopg2://', 1)
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
@@ -44,13 +38,15 @@ else:
     if LOCAL_DEV:
         print("⚙️ Using local SQLite database (development mode)")
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
-    # else:
-    #     raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
+    else:
+        raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
 
+# Avoid SQLAlchemy warnings
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 
-# Initialize DB safely
+# --- Initialize Database safely ---
+db = SQLAlchemy(app)
 try:
     with app.app_context():
         db.create_all()
@@ -58,6 +54,18 @@ try:
 except Exception as e:
     print(f"⚠️ Database initialization error (ignored): {e}")
 
+# --- Basic Routes ---
+@app.route("/")
+def home():
+    return "Flask App Running on Render!"
+
+@app.route("/test-db")
+def test_db():
+    try:
+        db.session.execute("SELECT 1")
+        return "✅ Supabase database connected!"
+    except Exception as e:
+        return f"❌ Database connection error: {e}"
 csrf = CSRFProtect(app)
 # app.py (Add this new section)
 
