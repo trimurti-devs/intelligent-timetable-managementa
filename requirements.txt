@@ -10,7 +10,7 @@ python-dotenv==1.0.0
 email_validator
 gunicorn
 Jinja2
-
+gunicorn==23.0.0
 
 
 
