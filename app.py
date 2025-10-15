@@ -18,54 +18,28 @@ from collections import namedtuple
 
 
 
-# --- Flask App Setup ---
 app = Flask(__name__)
 
-# Secret key
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_long_and_secure_fallback_key')
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-# --- Database Configuration ---
+# Config
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback_secret_key')
 DATABASE_URL = os.environ.get('DATABASE_URL')
-LOCAL_DEV = os.environ.get('LOCAL_DEV', '0') == '1' or os.environ.get('FLASK_ENV') == 'development'
-
-if DATABASE_URL:
-    # Supabase often provides "postgres://", SQLAlchemy needs "postgresql+psycopg2://"
-    if DATABASE_URL.startswith('postgres://'):
-        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql+psycopg2://', 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-else:
-    if LOCAL_DEV:
-        print("⚙️ Using local SQLite database (development mode)")
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///timetable.db'
-    else:
-        raise RuntimeError("❌ DATABASE_URL not set. Please configure Supabase connection string.")
-
-# Avoid SQLAlchemy warnings
+if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
+    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql+psycopg2://', 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'sqlite:///timetable.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 
-# --- Initialize Database safely ---
 db = SQLAlchemy(app)
-try:
-    with app.app_context():
-        db.create_all()
-        print("✅ Database tables created or verified.")
-except Exception as e:
-    print(f"⚠️ Database initialization error (ignored): {e}")
 
-# --- Basic Routes ---
+# Routes
 @app.route("/")
 def home():
     return "Flask App Running on Render!"
 
-@app.route("/test-db")
-def test_db():
-    try:
-        db.session.execute("SELECT 1")
-        return "✅ Supabase database connected!"
-    except Exception as e:
-        return f"❌ Database connection error: {e}"
+# Initialize DB
+if os.environ.get('FLASK_ENV') == 'development' or os.environ.get('LOCAL_DEV') == '1':
+    with app.app_context():
+        db.create_all()
+        print("✅ Database tables created or verified.")
 csrf = CSRFProtect(app)
 # app.py (Add this new section)
 
