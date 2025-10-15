@@ -1,7 +1,13 @@
 services:
   - type: web
-    name: flask-timetable-app
-    env: python
-    buildCommand: ""
+    name: flask-app
+    runtime: python3
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    plan: free
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: your-secret-key-here
+      - key: DATABASE_URL
+        value: your-supabase-database-url-here
